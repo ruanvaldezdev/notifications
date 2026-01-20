@@ -1,0 +1,24 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGREES_ROOT_PASSWORD: postgres
+      POSTGRES_DB: notification
+    ports:
+      - "5432:5432"
+  rabbitmq:
+        container_name: rabbitmq
+        image: rabbitmq:3.10-management
+        container_name: rabbitmq
+        restart: always
+        ports:
+            - 5672:5672
+            - 15672:15672
+        volumes:
+            - ./dados:/var/lib/rabbitmq/
+        environment:
+            - RABBITMQ_DEFAULT_USER=guest
+            - RABBITMQ_DEFAULT_PASS=guest
