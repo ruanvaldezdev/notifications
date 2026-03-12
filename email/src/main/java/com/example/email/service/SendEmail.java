@@ -18,11 +18,13 @@ public class SendEmail{
 @Value("${api.token}")
 private String apiToken;
 
+@Value("${api.domain}")
+private String domain;
 public void sendEmail(EmailDto data) {
 
     com.mailersend.sdk.emails.Email email = new Email();
 
-    email.setFrom("SenderEmail", "MS_fZWQBz@test-eqvygm0wx1jl0p7w.mlsender.net ");
+    email.setFrom("SenderEmail", domain);
     email.addRecipient("Destinatário:",data.recipient());
     email.setSubject("Teste notifications");
     email.setPlain(data.message());
