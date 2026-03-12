@@ -1,6 +1,8 @@
 package api.api.controller;
 import java.time.Instant;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -33,12 +35,12 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         // Authenticate user
         var user = userRepository.findByUsername(loginRequest.username());
 
         if(user.isEmpty() || !user.get().isLoginCorrect(loginRequest, passwordEncoder)) {
-          throw new RuntimeException("Invalid username or password");
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("username or password incorrect");
         }
         var now =Instant.now();
         var tempoExpiracao = 24*60L; // 1 hour in seconds

@@ -5,28 +5,26 @@ import  com.mailersend.sdk.emails.Email;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.example.email.model.EmailDto;
 import com.mailersend.sdk.MailerSend;
 import com.mailersend.sdk.MailerSendResponse;
 import com.mailersend.sdk.exceptions.MailerSendException;
 
-import jakarta.annotation.PostConstruct;
-@Component
+@Service
 public class SendEmail{
 
 @Value("${api.token}")
 private String apiToken;
 
-@PostConstruct
-@RabbitListener(queues = "${fila.direct}")
 public void sendEmail(EmailDto data) {
 
     com.mailersend.sdk.emails.Email email = new Email();
 
     email.setFrom("SenderEmail", "MS_fZWQBz@test-eqvygm0wx1jl0p7w.mlsender.net ");
-    email.addRecipient(null,data.recipient());
-    email.setSubject("");
+    email.addRecipient("Destinatário:",data.recipient());
+    email.setSubject("Teste notifications");
     email.setPlain(data.message());
    
     MailerSend ms = new MailerSend();
