@@ -1,7 +1,10 @@
 package api.api.model.dto;
-import api.api.model.Channel;
+import java.util.UUID;
 
-public record NotificationResponse(Channel channel, String recipient, String message) {
+import api.api.model.Channel;
+import api.api.model.User;
+
+public record NotificationResponse(UUID userId,String username ,UUID idNotification,Channel channel, String recipient, String message) {
 
 
 }

@@ -1,7 +1,5 @@
 package com.example.email.model;
 
-import java.util.UUID;
-
-public record EmailDto(UUID userId,String recipient,String message, String data) {
+public record EmailDto(String channel,String recipient,String message,String priority) {
 
 }

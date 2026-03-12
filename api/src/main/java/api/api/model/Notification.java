@@ -34,7 +34,7 @@ public class Notification {
 
 
     public Notification(User user,Channel channel,String recipient,String message,Priority priority ){
-        this.id=id;
+
         this.user=user;
         this.channel=channel;
         this.recipient=recipient;

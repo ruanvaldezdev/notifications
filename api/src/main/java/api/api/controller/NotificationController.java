@@ -63,11 +63,7 @@ public ResponseEntity<NotificationResponse> createNotification(@RequestBody @Val
             return message;
         });
 
-    NotificationResponse response = new NotificationResponse(
-        data.channel(), 
-        data.recipient(), 
-        data.message()
-    );
+
     Notification notification= new Notification(
         user, 
         data.channel(), 
@@ -78,6 +74,14 @@ public ResponseEntity<NotificationResponse> createNotification(@RequestBody @Val
     
     notificationRepository.save(notification);
 
+        NotificationResponse response = new NotificationResponse(
+        user.getId(),
+        user.getUsername(),
+        notification.getId(),
+        data.channel(), 
+        data.recipient(), 
+        data.message()
+    );
     return ResponseEntity.ok(response);
 }
 }

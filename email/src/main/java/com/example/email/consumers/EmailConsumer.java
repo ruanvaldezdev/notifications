@@ -9,10 +9,9 @@ import com.example.email.model.EmailDto;
 @Component
 public class EmailConsumer {
 
-    @RabbitListener(queues = "${broker.queue.email.name")
-
+    @RabbitListener(queues = "fila.email")
     public void listenEmailQueue(@Payload EmailDto string){
-        System.out.println(string.recipient());
+        System.out.println(string);
     
     }
 }
