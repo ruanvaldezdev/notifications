@@ -7,3 +7,5 @@ gateway/.mvn
 api/postgres_data
 .env
 postgres_data
+#/api/src/main/resources/private.key
+#/api/src/main/resources/public.pem

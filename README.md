@@ -1,37 +1,86 @@
-PARA INICIAR O CONTAINER É NECESSARIO APENAS SUBIR OS CONTAINERS
+🚀 Notification System Microservices
+Sistema de notificações multi-canal (Email e SMS) desenvolvido com Spring Boot, RabbitMQ e arquitetura de microserviços.
+🛠️ Tecnologias Principais
 
-DOCKER-COMPOSE UP -D OU DOCKER COMPOSE UP -D
+    Java 17 / Spring Boot
+    RabbitMQ (Mensageria e Prioridade)
+    PostgreSQL (Persistência)
+    Eureka Server (Service Discovery)
+    Spring Cloud Gateway (API Gateway)
+    Twilio (Provedor SMS)
+    MailerSender (Provedor Email)
 
-TER O JDK 17 INSTALADO PARA REALIZAR O RUN DAS APLICAÇÕES
-
- E sudo chmod +x iniciar-localhost.sh
- sudo ./iniciar-localhost.sh
-
-porém deve realizar os registros nos determinados microservices
-
-para sms foi ultilizado o twillo  e para email foi ulizado o mailersender
-
-crie um .env para inserir suas variaveis de ambiente das duas apis desta maneira
+🚦 Como Iniciar
+1. Configuração de Variáveis de Ambiente
+Crie um arquivo chamado .env na raiz do projeto e preencha com suas credenciais:
+env
 
 # .env na raiz do projeto
-TWILIO_SID=
-TWILIO_TOKEN=
-API_TOKEN_EMAIL=
-API_DOMAIN= 
+TWILIO_SID=seu_sid_aqui
+TWILIO_TOKEN=seu_token_aqui
+API_TOKEN_EMAIL=seu_token_mailersender
+API_DOMAIN=seu_dominio_configurado
 
+Use code with caution.
+2. Subir os Containers
+Certifique-se de que o Docker está rodando e execute:
+bash
 
-para realizar a requisições pode ultizar do postman 
-    em localhost:8082/api
+docker-compose up -d --build
 
-    os endpoints são /auth/login
-    auth/register
+Use code with caution.
+Ou docker compose up -d --build dependendo da sua versão.
+📡 Endpoints e Fluxo de Uso
+A porta principal de entrada via Gateway é: http://localhost:8082/api-service/api
+1. Autenticação (Acesso Aberto)
+A API utiliza JWT (Bearer Auth). Primeiro, registre-se e obtenha seu token.
 
-    notification POST
-    notification GET 
+    Registrar: POST /auth/register
+        Payload: {"username": "seu_user", "password": "sua_senha"}
+    Login: POST /auth/login
+        Payload: {"username": "seu_user", "password": "sua_senha"}
+        Importante: Copie o token recebido na resposta.
 
-    
-    OU ULTILIZAR O SWAGGER QUE ESTARÁ NA http://localhost:8083/api/swagger-ui/index.html
+2. Header de Segurança
+Para todas as rotas de notificações, adicione o header:
 
+    Key: Authorization
+    Value: Bearer SEU_TOKEN_AQUI
 
+3. Enviar Notificação (POST /notifications)
+O sistema valida o destinatário dinamicamente com base no canal escolhido.
+Exemplo EMAIL:
+json
 
-    
+{
+  "channel": "EMAIL",
+  "recipient": "usuario@email.com",
+  "message": "Sua fatura chegou!",
+  "priority": "HIGH"
+}
+
+Use code with caution.
+Exemplo SMS:
+json
+
+{
+  "channel": "SMS",
+  "recipient": "+5511999999999",
+  "message": "Seu código de verificação é 1234",
+  "priority": "MEDIUM"
+}
+
+Use code with caution.
+4. Consultar Notificações (GET /notifications)
+Retorna o histórico de notificações enviadas pelo usuário autenticado.
+📖 Documentação Swagger
+Para visualizar e testar os endpoints interativamente, acesse:
+🔗 http://localhost:8083/api/swagger-ui/index.html
+🏗️ Resumo da Infraestrutura
+Serviço	Porta	Descrição
+Gateway	8082	Porta de entrada unificada
+API	8083	Processamento e validação
+Eureka	8081	Service Discovery
+Email	8084	Consumer (MailerSender)
+SMS	8085	Consumer (Twilio)
+RabbitMQ	15672	Painel de controle das filas
