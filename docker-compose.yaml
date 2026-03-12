@@ -27,3 +27,61 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
+
+  eureka-server:
+    build: ./server
+    ports:
+      - "8081:8081"
+    environment:
+      - EUREKA_SERVER_HOST=eureka-server
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_SERVER_HOST=eureka-server
+
+
+  api-service:
+    build: ./api
+    ports:
+      - "8083:8083"
+    depends_on:
+      - eureka-server
+      - postgres
+      - rabbitmq
+    environment:
+      - SPRING_DATASOURCE_URL_HOST=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - EUREKA_SERVER_HOST=eureka-server
+  sms-service:
+    build: ./sms
+    ports:
+      - "8085:8085"
+    depends_on:
+      - rabbitmq
+      - eureka-server
+    environment:
+      - EUREKA_SERVER_HOST=eureka-server
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - TWILIO_ACCOUNT_SID=${TWILIO_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_TOKEN}
+
+
+  email-service:
+    build: ./email
+    ports:
+      - "8084:8084"
+    depends_on:
+      - postgres
+      - rabbitmq
+      - eureka-server
+    environment:
+      - SPRING_DATASOURCE_URL_HOST=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - EUREKA_SERVER_HOST=eureka-server
+      - API_TOKEN_EMAIL=${API_TOKEN_EMAIL}
+      - API_DOMAIN=${API_DOMAIN}

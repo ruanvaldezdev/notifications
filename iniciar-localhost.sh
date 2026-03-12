@@ -25,6 +25,13 @@ sleep 5
 # 5. GATEWAY (Geralmente por último para rotear serviços prontos)
 echo -e "${YELLOW}Iniciando Gateway...${NC}"
 (cd gateway && mvn spring-boot:run > ../gateway.log 2>&1) &
+sleep 5
+
+# 6. SMS (Geralmente por último para rotear serviços prontos)
+echo -e "${YELLOW}Iniciando SMS...${NC}"
+(cd SMS && mvn spring-boot:run > ../gateway.log 2>&1) &
+
+
 
 echo -e "${GREEN}✅ Todos os serviços foram disparados em segundo plano!${NC}"
 echo "--------------------------------------------------------"

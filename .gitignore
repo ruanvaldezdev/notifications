@@ -6,3 +6,4 @@ gateway/.mvn
 .github
 api/postgres_data
 .env
+postgres_data
