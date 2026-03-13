@@ -31,7 +31,7 @@ public class Notification {
     private Priority priority;
     private LocalDateTime date;
 
-
+    Notification(){}
 
     public Notification(User user,Channel channel,String recipient,String message,Priority priority ){
 
@@ -75,6 +75,9 @@ public class Notification {
     }
     public LocalDateTime getData() {
         return LocalDateTime.now();
+    }
+    public User getUser(){
+        return user;
     }
  
 }

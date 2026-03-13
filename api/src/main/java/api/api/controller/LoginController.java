@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import api.api.dto.LoginRequest;
+import api.api.dto.LoginResponse;
 import  api.api.model.User;
-import api.api.model.dto.LoginRequest;
-import api.api.model.dto.LoginResponse;
 import api.api.persistence.UserRepository;
 
 @RestController

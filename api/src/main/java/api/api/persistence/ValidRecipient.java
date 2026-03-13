@@ -2,6 +2,9 @@ package api.api.persistence;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
+import api.api.validators.NotificationRequestValidator;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.RetentionPolicy;
 import jakarta.validation.Constraint;

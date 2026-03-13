@@ -1,4 +1,4 @@
-package api.api.model.dto;
+package api.api.dto;
 import api.api.model.Channel;
 import api.api.model.Priority;
 import api.api.persistence.ValidRecipient;
