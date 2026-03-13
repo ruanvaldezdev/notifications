@@ -48,6 +48,20 @@ Esse projeto foi projetado para aplicações modernas que precisam de **entrega 
 ## Arquitetura de Microsserviços
 
 - Registro e descoberta de serviços usando **Eureka Server**
+Client
+│
+▼
+API Gateway
+│
+▼
+API Service
+│
+▼
+RabbitMQ
+│
+├── Email Service
+├── SMS Service
+└── Notification Processing
 - Comunicação entre serviços via **RabbitMQ**
 - Gateway centralizado para roteamento de requisições
 - Documentação da API com **Swagger**
@@ -82,24 +96,8 @@ O sistema integra serviços externos para envio de notificações:
 
 # 🏗 Arquitetura
 
-```
+<img width="1600" height="721" alt="image" src="https://github.com/user-attachments/assets/c8390b92-975f-4e8c-a0c4-3658d447e1ba" />
 
-Client
-│
-▼
-API Gateway
-│
-▼
-API Service
-│
-▼
-RabbitMQ
-│
-├── Email Service
-├── SMS Service
-└── Notification Processing
-
-```
 
 ---
 
