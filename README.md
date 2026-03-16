@@ -1,268 +1,85 @@
-
-# 🚀 Notifications
-
-**Capacitando comunicação eficiente com notificações em tempo real!**
-
-![Java](https://img.shields.io/badge/Java-17-orange)
-![Spring Boot](https://img.shields.io/badge/SpringBoot-Microservices-green)
-![Docker](https://img.shields.io/badge/Docker-Containers-blue)
-![RabbitMQ](https://img.shields.io/badge/RabbitMQ-MessageQueue-orange)
-
----
-
-# 📚 Sumário
-
-- [Visão Geral](#visão-geral)
-- [Funcionalidades](#funcionalidades)
-- [Arquitetura](#arquitetura)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Primeiros Passos](#primeiros-passos)
-  - [Pré-requisitos](#pré-requisitos)
-  - [Instalação](#instalação)
-  - [Uso](#uso)
-  - [Testes](#testes)
-- [Roadmap](#roadmap)
-- [Contribuindo](#contribuindo)
-- [Licença](#licença)
-- [Agradecimentos](#agradecimentos)
-
----
-
-# 📖 Visão Geral
-
-O **Notifications** é um sistema baseado em **arquitetura de microsserviços** responsável por gerenciar e enviar notificações através de múltiplos canais como:
-
-- 📧 Email
-- 📱 SMS
-- 🔔 Push notifications
-
-O sistema utiliza **mensageria assíncrona** para garantir alta escalabilidade e confiabilidade no envio das notificações.
-
-Esse projeto foi projetado para aplicações modernas que precisam de **entrega eficiente de mensagens e comunicação entre serviços distribuídos**.
-
----
-
-# ⚙️ Funcionalidades
-
-## Arquitetura de Microsserviços
-
-- Registro e descoberta de serviços usando **Eureka Server**
-Client
-│
-▼
-API Gateway
-│
-▼
-API Service
-│
-▼
-RabbitMQ
-│
-├── Email Service
-├── SMS Service
-└── Notification Processing
-- Comunicação entre serviços via **RabbitMQ**
-- Gateway centralizado para roteamento de requisições
-- Documentação da API com **Swagger**
-
----
-
-## Qualidade de Código
-
-- Gerenciamento de dependências com **Maven**
-- Estrutura seguindo boas práticas do **Spring Boot**
-- Testes unitários para componentes críticos
-
----
-
-## Integrações
-
-O sistema integra serviços externos para envio de notificações:
-
-- 📩 **Twilio** para envio de SMS
-- 📧 **MailerSend** para envio de emails
-- 🐇 **RabbitMQ** para processamento de mensagens
-
----
-
-## Segurança
-
-- Autenticação utilizando **JWT**
-- Criptografia de senhas com **BCrypt**
-- Validações personalizadas para integridade dos dados
-
----
-
-# 🏗 Arquitetura
-
-<img width="1600" height="721" alt="image" src="https://github.com/user-attachments/assets/c8390b92-975f-4e8c-a0c4-3658d447e1ba" />
-
-
----
-
-# 📁 Estrutura do Projeto
-
-```
-
-notifications/
-├── api
-│   ├── src
-│   ├── Dockerfile
-│   └── pom.xml
-│
-├── email
-│   ├── src
-│   ├── Dockerfile
-│   └── pom.xml
-│
-├── sms
-│   ├── src
-│   ├── Dockerfile
-│   └── pom.xml
-│
-├── gateway
-│   ├── src
-│   ├── Dockerfile
-│   └── pom.xml
-│
-├── server
-│   ├── src
-│   ├── Dockerfile
-│   └── pom.xml
-│
-└── docker-compose.yaml
-
-````
-
-Cada serviço possui responsabilidade isolada, garantindo **baixo acoplamento e alta escalabilidade**.
-
----
-
-# 🧰 Tecnologias Utilizadas
-
-- **Java**
-- **Spring Boot**
-- **Spring Cloud**
-- **RabbitMQ**
-- **Docker**
-- **PostgreSQL**
-- **Maven**
-- **JWT**
-- **Swagger**
-
----
-
-# 🚀 Primeiros Passos
-
-## Pré-requisitos
-
-Antes de executar o projeto, instale:
-
-- Java 17+
-- Docker
-- Maven
-
----
-
-# 📦 Instalação
-
-Clone o repositório:
-
-```bash
-git clone https://github.com/donruan3001/notifications
-````
-
-Entre na pasta do projeto:
-
-```bash
-cd notifications
-```
-
-Instale as dependências:
-
-```bash
-mvn install
-```
-
----
-
-# ▶️ Uso
-
-Executando com Docker:
-
-```bash
-docker-compose up --build
-```
-
-Após iniciar os containers, os serviços estarão disponíveis no ambiente local.
-
----
-
-# 🧪 Testes
-
-Execute os testes com:
-
-```bash
-mvn test
-```
-
----
-
-# 🗺 Roadmap
-
-Próximas melhorias planejadas:
-
-* [ ] Sistema de prioridade de notificações
-* [ ] Retry automático de mensagens
-* [ ] Dead Letter Queue
-* [ ] Dashboard de monitoramento
-* [ ] Sistema de notificações push
-
----
-
-# 🤝 Contribuindo
-
-Contribuições são bem-vindas!
-
-1. Fork o projeto
-2. Crie uma branch para sua feature
-
-```
-git checkout -b feature/minha-feature
-```
-
-3. Commit suas alterações
-
-```
-git commit -m "feat: nova funcionalidade"
-```
-
-4. Envie para o repositório
-
-```
-git push origin feature/minha-feature
-```
-
-5. Abra um Pull Request
-
----
-
-# 📜 Licença
-
-Este projeto está sob a licença definida no arquivo **LICENSE**.
-
----
-
-# 🙌 Agradecimentos
-
-* Comunidade **Spring Boot**
-* Documentação do **RabbitMQ**
-* Ferramentas open source utilizadas no projeto
-
----
-
-⭐ Se este projeto te ajudou, considere dar uma estrela no repositório.
-
-```
-```
+🚀 Notification System Microservices
+Sistema de notificações multi-canal (Email e SMS) desenvolvido com Spring Boot, RabbitMQ e arquitetura de microserviços.
+è um sistema que realizao envios de mensagens para duas apis  uma  de sms e outra de email,  e para rodar o projeto primeiramente voce precisa de realizar o registros na duas apis Twilio (provedor de sms) e MailerSender( provedor de email e inserir as chaves de API no .env).
+
+
+🛠️ Tecnologias Principais
+
+    Java 17 / Spring Boot
+    RabbitMQ (Mensageria e Prioridade)
+    PostgreSQL (Persistência)
+    Eureka Server (Service Discovery)
+    Spring Cloud Gateway (API Gateway)
+    Twilio (Provedor SMS)
+    MailerSender (Provedor Email)
+
+🚦 Como Iniciar
+1. Configuração de Variáveis de Ambiente
+Crie um arquivo chamado .env na raiz do projeto e preencha com suas credenciais:
+env
+
+# .env na raiz do projeto
+    TWILIO_SID=seu_sid_aqui
+    TWILIO_TOKEN=seu_token_aqui
+    API_TOKEN_EMAIL=seu_token_mailersender
+    API_DOMAIN=seu_dominio_configurado
+    NUMBER_SMS=
+
+Use code with caution.
+### 2. Subir os Containers
+Certifique-se de que o Docker está rodando e execute:
+
+    docker-compose up -d --build
+
+    Ou docker compose up -d --build dependendo da sua versão.
+
+📡 Endpoints e Fluxo de Uso
+A porta principal de entrada via Gateway é: http://localhost:8082/api-service/api
+### 1. Autenticação (Acesso Aberto)
+A API utiliza JWT (Bearer Auth). Primeiro, registre-se e obtenha seu token.
+
+    Registrar: POST /auth/register
+        Payload: {"username": "seu_user", "password": "sua_senha"}
+
+    Login: POST /auth/login
+        Payload: {"username": "seu_user", "password": "sua_senha"}
+        Importante: Copie o token recebido na resposta.
+
+### 3. Enviar Notificação (POST /notifications)
+O sistema valida o destinatário dinamicamente com base no canal escolhido.
+Exemplo EMAIL:
+json
+
+    {
+    "channel": "EMAIL",
+    "recipient": "usuario@email.com",
+    "message": "Sua fatura chegou!",
+    "priority": "HIGH"
+    }
+
+
+### Exemplo SMS:
+json
+
+    {
+    "channel": "SMS",
+    "recipient": "+5511999999999",
+    "message": "Seu código de verificação é 1234",
+    "priority": "MEDIUM"
+    }
+
+## 4. Consultar Notificações (GET /notifications)
+Retorna o histórico de notificações enviadas pelo usuário autenticado.
+📖 Documentação Swagger
+    Para visualizar e testar os endpoints interativamente, acesse:
+    🔗 http://localhost:8083/api/swagger-ui/index.html
+🏗️ Resumo da Infraestrutura
+
+| Serviço | Porta | Descrição |
+| :--- | :--- | :--- |
+| **Gateway** | 8082 | Porta de entrada unificada |
+| **API** | 8083 | Processamento e validação |
+| **Eureka** | 8081 | Service Discovery |
+| **Email** | 8084 | Consumer (MailerSender) |
+| **SMS** | 8085 | Consumer (Twilio) |
+| **RabbitMQ** | 15672 | Painel de controle (UI) |
