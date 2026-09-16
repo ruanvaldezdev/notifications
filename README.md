@@ -1,19 +1,38 @@
-🚀 Notification System Microservices
-Sistema de notificações multi-canal (Email e SMS) desenvolvido com Spring Boot, RabbitMQ e arquitetura de microserviços.
-è um sistema que realizao envios de mensagens para duas apis  uma  de sms e outra de email,  e para rodar o projeto primeiramente voce precisa de realizar o registros na duas apis Twilio (provedor de sms) e Brevo( provedor de email e inserir as chaves de API no .env).
+# 🚀 Notification System — Microservices
 
+![Java](https://img.shields.io/badge/Java-17-orange?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4-6DB33F?logo=springboot&logoColor=white)
+![RabbitMQ](https://img.shields.io/badge/RabbitMQ-Mensageria-FF6600?logo=rabbitmq&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
 
-🛠️ Tecnologias Principais
+Sistema de notificações multi-canal (Email e SMS) construído com Spring Boot e arquitetura de microserviços. Um cliente autenticado via JWT envia uma notificação para a API, que a publica no RabbitMQ; os serviços de Email e SMS consomem suas respectivas filas de forma assíncrona e disparam o envio através da Brevo e da Twilio.
 
-    Java 17 / Spring Boot
-    RabbitMQ (Mensageria e Prioridade)
-    PostgreSQL (Persistência)
-    Eureka Server (Service Discovery)
-    Spring Cloud Gateway (API Gateway)
-    Twilio (Provedor SMS)
-    Brevo (Provedor Email)
+## 📑 Sumário
 
-🏗️ Arquitetura
+- [Tecnologias](#️-tecnologias-principais)
+- [Arquitetura](#️-arquitetura)
+- [Como iniciar](#-como-iniciar)
+- [Endpoints e fluxo de uso](#-endpoints-e-fluxo-de-uso)
+- [Documentação Swagger](#-documentação-swagger)
+- [Infraestrutura](#️-resumo-da-infraestrutura)
+- [Segurança](#-segurança)
+
+## 🛠️ Tecnologias Principais
+
+| Categoria | Tecnologia |
+| :--- | :--- |
+| Linguagem / Framework | Java 17, Spring Boot |
+| Mensageria | RabbitMQ (filas com prioridade) |
+| Persistência | PostgreSQL |
+| Service Discovery | Eureka Server |
+| API Gateway | Spring Cloud Gateway |
+| Autenticação | JWT assinado com par de chaves RSA |
+| Provedor de SMS | Twilio |
+| Provedor de Email | Brevo |
+| Infraestrutura | Docker / Docker Compose |
+
+## 🏗️ Arquitetura
 
 ```mermaid
 flowchart LR
@@ -32,82 +51,114 @@ flowchart LR
 
 O Gateway roteia as requisições autenticadas (JWT) para a API, que persiste os dados no PostgreSQL e publica a notificação na fila correspondente do RabbitMQ. Os serviços de Email e SMS consomem suas filas de forma assíncrona e disparam o envio via Brevo e Twilio, respectivamente. Todos os serviços se registram no Eureka para descoberta.
 
-🚦 Como Iniciar
-1. Gerar as chaves RSA (usadas para assinar/validar os JWTs)
+## 🚦 Como Iniciar
+
+### Pré-requisitos
+
+- Docker e Docker Compose
+- Uma conta na [Twilio](https://www.twilio.com/) (provedor de SMS) e na [Brevo](https://www.brevo.com/) (provedor de Email), com as respectivas chaves de API
+- OpenSSL (para gerar o par de chaves RSA do passo 2)
+
+### 1. Clonar o repositório
+
+```bash
+git clone https://github.com/ruanvaldezdev/notifications.git
+cd notifications
+```
+
+### 2. Gerar as chaves RSA (usadas para assinar/validar os JWTs)
 
 A API assina os tokens JWT com um par de chaves RSA lido de `api/src/main/resources/private.key` (PKCS#8) e `public.pem` (X.509). Gere o seu próprio par — não reutilize chaves de exemplo:
 
-    openssl genrsa -out keypair.pem 2048
-    openssl rsa -in keypair.pem -pubout -out api/src/main/resources/public.pem
-    openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in keypair.pem -out api/src/main/resources/private.key
-    rm keypair.pem
+```bash
+openssl genrsa -out keypair.pem 2048
+openssl rsa -in keypair.pem -pubout -out api/src/main/resources/public.pem
+openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in keypair.pem -out api/src/main/resources/private.key
+rm keypair.pem
+```
 
 Esses arquivos ficam fora do controle de versão (`.gitignore`) — cada ambiente (dev, produção) deve gerar o seu próprio par.
 
-2. Configuração de Variáveis de Ambiente
-Crie um arquivo chamado .env na raiz do projeto e preencha com suas credenciais:
-env
+### 3. Configurar as variáveis de ambiente
 
-# .env na raiz do projeto
-    TWILIO_SID=seu_sid_aqui
-    TWILIO_TOKEN=seu_token_aqui
-    API_TOKEN_EMAIL=sua_api_key_brevo
-    API_DOMAIN=seu_email_remetente_verificado_na_brevo
-    NUMBER_SMS=
+Crie um arquivo `.env` na raiz do projeto:
 
-Use code with caution.
-### 3. Subir os Containers
-Certifique-se de que o Docker está rodando e execute:
+```env
+TWILIO_SID=seu_sid_aqui
+TWILIO_TOKEN=seu_token_aqui
+API_TOKEN_EMAIL=sua_api_key_brevo
+API_DOMAIN=seu_email_remetente_verificado_na_brevo
+NUMBER_SMS=seu_numero_twilio
+```
 
-    docker-compose up -d --build
+### 4. Subir os containers
 
-    Ou docker compose up -d --build dependendo da sua versão.
+```bash
+docker-compose up -d --build
+# ou, dependendo da versão do Docker:
+docker compose up -d --build
+```
 
 Cada serviço tem um `healthcheck` no `docker-compose.yaml`, então o Postgres, o RabbitMQ e o Eureka precisam estar de fato saudáveis (não só "iniciados") antes que a API, o SMS e o Email subam — evita falhas de conexão na inicialização. Acompanhe com:
 
-    docker-compose ps
+```bash
+docker-compose ps
+```
 
-📡 Endpoints e Fluxo de Uso
-A porta principal de entrada via Gateway é: http://localhost:8082/api-service/api
-### Autenticação (Acesso Aberto)
+## 📡 Endpoints e Fluxo de Uso
+
+A porta principal de entrada via Gateway é: `http://localhost:8082/api-service/api`
+
+### 1. Autenticação (acesso aberto)
+
 A API utiliza JWT (Bearer Auth). Primeiro, registre-se e obtenha seu token.
 
-    Registrar: POST /auth/register
-        Payload: {"username": "seu_user", "password": "sua_senha"}
+**Registrar** — `POST /auth/register`
+```json
+{ "username": "seu_user", "password": "sua_senha" }
+```
 
-    Login: POST /auth/login
-        Payload: {"username": "seu_user", "password": "sua_senha"}
-        Importante: Copie o token recebido na resposta.
+**Login** — `POST /auth/login`
+```json
+{ "username": "seu_user", "password": "sua_senha" }
+```
+> Copie o token recebido na resposta e use-o como `Authorization: Bearer <token>` nas próximas requisições.
 
-### 3. Enviar Notificação (POST /notifications)
+### 2. Enviar notificação — `POST /notifications`
+
 O sistema valida o destinatário dinamicamente com base no canal escolhido.
-Exemplo EMAIL:
-json
 
-    {
-    "channel": "EMAIL",
-    "recipient": "usuario@email.com",
-    "message": "Sua fatura chegou!",
-    "priority": "HIGH"
-    }
+**Exemplo EMAIL:**
+```json
+{
+  "channel": "EMAIL",
+  "recipient": "usuario@email.com",
+  "message": "Sua fatura chegou!",
+  "priority": "HIGH"
+}
+```
 
+**Exemplo SMS:**
+```json
+{
+  "channel": "SMS",
+  "recipient": "+5511999999999",
+  "message": "Seu código de verificação é 1234",
+  "priority": "MEDIUM"
+}
+```
 
-### Exemplo SMS:
-json
+### 3. Consultar notificações — `GET /notifications`
 
-    {
-    "channel": "SMS",
-    "recipient": "+5511999999999",
-    "message": "Seu código de verificação é 1234",
-    "priority": "MEDIUM"
-    }
-
-## 4. Consultar Notificações (GET /notifications)
 Retorna o histórico de notificações enviadas pelo usuário autenticado.
-📖 Documentação Swagger
-    Para visualizar e testar os endpoints interativamente, acesse:
-    🔗 http://localhost:8083/api/swagger-ui/index.html
-🏗️ Resumo da Infraestrutura
+
+## 📖 Documentação Swagger
+
+Para visualizar e testar os endpoints interativamente, acesse:
+
+🔗 http://localhost:8083/api/swagger-ui/index.html
+
+## 🏗️ Resumo da Infraestrutura
 
 | Serviço | Porta | Descrição |
 | :--- | :--- | :--- |
@@ -117,3 +168,13 @@ Retorna o histórico de notificações enviadas pelo usuário autenticado.
 | **Email** | 8084 | Consumer (Brevo) |
 | **SMS** | 8085 | Consumer (Twilio) |
 | **RabbitMQ** | 15672 | Painel de controle (UI) |
+
+## 🔒 Segurança
+
+- Credenciais (Twilio, Brevo, banco de dados) ficam apenas no `.env`, que nunca é versionado.
+- As chaves RSA usadas para assinar os JWTs (`private.key`/`public.pem`) também ficam fora do controle de versão — cada ambiente gera o seu próprio par (veja o passo 2 acima).
+- Os consumers de fila (SMS e Email) tratam falhas de envio sem derrubar a aplicação, evitando que uma mensagem travada bloqueie a fila indefinidamente.
+
+---
+
+Desenvolvido por [Ruan Valdez](https://github.com/ruanvaldezdev).
