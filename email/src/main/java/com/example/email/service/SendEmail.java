@@ -1,46 +1,51 @@
 package com.example.email.service;
 
-import  com.mailersend.sdk.emails.Email;
+import java.util.List;
+import java.util.Map;
 
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import com.example.email.model.EmailDto;
-import com.mailersend.sdk.MailerSend;
-import com.mailersend.sdk.MailerSendResponse;
-import com.mailersend.sdk.exceptions.MailerSendException;
 
 @Service
-public class SendEmail{
+public class SendEmail {
 
-@Value("${api.token}")
-private String apiToken;
+    private static final String BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 
-@Value("${api.domain}")
-private String domain;
-public void sendEmail(EmailDto data) {
+    @Value("${api.token}")
+    private String apiToken;
 
-    com.mailersend.sdk.emails.Email email = new Email();
+    @Value("${api.domain}")
+    private String senderEmail;
 
-    email.setFrom("SenderEmail", domain);
-    email.addRecipient("Destinatário:",data.recipient());
-    email.setSubject("Teste notifications");
-    email.setPlain(data.message());
-   
-    MailerSend ms = new MailerSend();
+    private final RestClient restClient = RestClient.create();
 
-    ms.setToken(apiToken);
+    public void sendEmail(EmailDto data) {
 
-    try {
+        Map<String, Object> body = Map.of(
+                "sender", Map.of("name", "Notifications", "email", senderEmail),
+                "to", List.of(Map.of("email", data.recipient())),
+                "subject", "Teste notifications",   
+                "textContent", data.message()
+        );
 
-        MailerSendResponse response = ms.emails().send(email);
-        System.out.println(response.messageId);
-        System.out.println("email enviado para o destinatário"+email.recipients);
-    } catch (MailerSendException e) {
-        e.printStackTrace();
+        try {
+            String response = restClient.post()
+                    .uri(BREVO_API_URL)
+                    .header("api-key", apiToken)
+                    .header("accept", "application/json")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(body)
+                    .retrieve()
+                    .body(String.class);
+
+            System.out.println("Email enviado para o destinatário " + data.recipient() + ": " + response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-}
-        
+
 }
